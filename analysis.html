@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>题目答案和解析跳转页面</title>
+    <script>
+        // 获取URL参数
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // 读取JSON文件并进行跳转
+        async function loadAndRedirect() {
+            const response = await fetch('exams/data/analysis_metadata.json');
+            const data = await response.json();
+
+            const id = getQueryParam('id');
+            if (!id) {
+                document.getElementById('countdownMessage').textContent = '未找到ID参数';
+                return;
+            }
+
+            const analysisItem = data.analysislist.find(item => item.id === id);
+            if (analysisItem && analysisItem.link) {
+                document.getElementById('redirectLink').href = analysisItem.link;
+                startCountdown(analysisItem.link);
+            } else {
+                document.getElementById('countdownMessage').textContent = '未找到题目ID';
+            }
+        }
+
+        // 倒计时功能
+        function startCountdown(link) {
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+
+            const interval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    golink(link);
+                }
+            }, 1000);
+        }
+
+        // 跳转函数
+        function golink(link) {
+            window.location.href = link;
+        }
+
+        // 页面加载完成后执行跳转
+        window.onload = loadAndRedirect;
+    </script>
+</head>
+<body>
+    <center>
+        <h1>正在跳转，请稍候...</h1>
+        <p id="countdownMessage">倒计时<span id="countdown" style="font-size: 2em; color: red;">5</span>秒</p>
+        <p>如果没有自动跳转，请点击<a id="redirectLink" href="#">这里</a></p>
+    </center>
+</body>
+</html>

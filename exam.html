@@ -1,0 +1,102 @@
+<!-- exam.html -->
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小小杨在线测试平台</title>
+    <link rel="stylesheet" href="https://lf6-unpkg.zstaticcdn.com/mdui@2/mdui.css">
+    <script src="https://lf6-unpkg.zstaticcdn.com/mdui@2/mdui.global.js"></script>
+    <script src="src/script.js"></script>
+    <link rel="stylesheet" href="src/lib/qmsg/styles.css">
+    <script src="src/lib/qmsg/script.js"></script>
+    <link rel="stylesheet" href="src/styles.css">
+    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/limonte-sweetalert2/11.4.4/sweetalert2.all.min.js"></script>
+</head>
+
+<body>
+
+    <div id="timer">
+        <span id="timerDisplay">剩余时间: <span id="timerCount">未开始</span></span>
+    </div>
+    <div id="errorContainer">
+        <span id="errorText"></span>
+    </div>
+    <h1 id="title" style="display: none;">考试系统</h1>
+    <hr>
+    <div id="description" style="display: none;">无描述</div>
+    <br>
+    <mdui-button id="startButton" onclick="startExam()"
+        class="mdui-btn mdui-ripple mdui-btn-raised mdui-color-theme-accent">开始考试</mdui-button>
+
+    <div id="questionsContainer" style="display: none;">
+        <br>
+        <h1>出现错误</h1>
+    </div>
+    <span id="submit_bth">
+    <mdui-button id="submitButton" style="display: none;" onclick="showResults()"
+        class="mdui-btn mdui-ripple mdui-btn-raised mdui-color-theme-accent" >立即交卷</mdui-button>
+      </span>
+    <div id="result" style="display: none;">
+        <mdui-button id="retestButton" onclick="window.location.reload()"
+            class="mdui-btn mdui-ripple mdui-btn-raised mdui-color-theme-accent">再考一次</mdui-button>
+        <h3>您的得分: <span id="scoreDisplay">0</span></h3>
+        <div id="resultContainer">
+            <!-- 答题情况会在这里显示 -->
+        </div>
+        <div id="analysisLinkContainer">
+            <!-- 答案解析链接会在这里显示 -->
+        </div>
+    </div>
+    <footer>
+        <p>
+            © 2023-<span id="year"></span> 小小杨Lty 保留所有权利<br>
+            页面加载时间: <span id="loadtime"></span> 秒
+          
+            <script>
+              window.onload = function () {
+                  // 获取footer元素
+                  const footer = document.querySelector("footer");
+          
+                  // 初始化footer为可见状态
+                  footer.style.display = "block";
+          
+                  // 当鼠标移动到footer上时，隐藏footer
+                  footer.addEventListener("mouseenter", function() {
+                      footer.style.display = "none"; // 隐藏footer
+                  });
+          
+                  // 当鼠标离开footer时，重新显示footer
+                  footer.addEventListener("mouseleave", function() {
+                      footer.style.display = "block"; // 显示footer
+                  });
+          
+                  // 计算页面加载时间
+                  try {
+                      let loadtime = Date.now() - performance.timing.navigationStart;
+                      loadtime = loadtime / 1000; // 转换为秒
+                      loadtime = loadtime.toFixed(2); // 保留两位小数
+                      document.getElementById("loadtime").textContent = loadtime;
+                  } catch (error) {
+                      console.error("获取页面加载时间时发生错误: ", error);
+                      document.getElementById("loadtime").textContent = "时间不可用";
+                  }
+          
+                  // 获取当前年份
+                  try {
+                      const currentYear = new Date().getFullYear();
+                      document.getElementById("year").textContent = currentYear;
+                  } catch (error) {
+                      console.error("获取当前年份时发生错误: ", error);
+                      document.getElementById("year").textContent = "年份不可用";
+                  }
+              };
+          </script>
+          
+          </p>
+          
+    </footer>
+</body>
+
+</html>

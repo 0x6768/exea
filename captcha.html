@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>验证码</title>
+    <script>
+        function setCookie(name, value) {
+            var Days = 30;
+            var exp = new Date();
+            exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+            document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+        }
+
+        function GVerify(containerId) {
+            this.options = {
+                id: containerId,
+                canvasId: "verifyCanvas",
+                width: "200",
+                height: "50",
+                type: "blend",
+                code: ""
+            };
+
+            this.options.numArr = "0,1,2,3,4,5,6,7,8,9".split(",");
+            this.options.letterArr = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".split(",");
+
+            this._init();
+            this.refresh();
+        }
+
+        GVerify.prototype = {
+            _init: function() {
+                var con = document.getElementById(this.options.id);
+                var canvas = document.createElement("canvas");
+                canvas.id = this.options.canvasId;
+                canvas.width = this.options.width;
+                canvas.height = this.options.height;
+                canvas.style.cursor = "pointer";
+                canvas.innerHTML = "您的浏览器版本不支持canvas";
+                con.appendChild(canvas);
+                var parent = this;
+                canvas.onclick = function() {
+                    parent.refresh();
+                }
+            },
+
+            refresh: function() {
+                this.options.code = "";
+                var canvas = document.getElementById(this.options.canvasId);
+                if (canvas.getContext) {
+                    var ctx = canvas.getContext('2d');
+                } else {
+                    return;
+                }
+
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = this._randomColor(180, 240);
+                ctx.fillRect(0, 0, this.options.width, this.options.height);
+
+                var txtArr = this.options.numArr.concat(this.options.letterArr);
+
+                for (var i = 1; i <= 4; i++) {
+                    var txt = txtArr[this._randomNum(0, txtArr.length)];
+                    this.options.code += txt;
+                    ctx.font = this._randomNum(this.options.height / 2, this.options.height) + 'px SimHei';
+                    ctx.fillStyle = this._randomColor(50, 160);
+                    var x = this.options.width / 5 * i;
+                    var y = this.options.height / 2;
+                    var deg = this._randomNum(-30, 30);
+                    ctx.translate(x, y);
+                    ctx.rotate(deg * Math.PI / 180);
+                    ctx.fillText(txt, 0, 0);
+                    ctx.rotate(-deg * Math.PI / 180);
+                    ctx.translate(-x, -y);
+                }
+
+                // 在刷新验证码时更新cookie
+                setCookie("verifyCode", this.options.code);
+            },
+
+            _randomNum: function(min, max) {
+                return Math.floor(Math.random() * (max - min) + min);
+            },
+
+            _randomColor: function(min, max) {
+                var r = this._randomNum(min, max);
+                var g = this._randomNum(min, max);
+                var b = this._randomNum(min, max);
+                return "rgb(" + r + "," + g + "," + b + ")";
+            }
+        };
+
+        window.onload = function() {
+            var verifyCode = new GVerify("v_container");
+            setCookie("verifyCode", verifyCode.options.code);
+        };
+    </script>
+</head>
+<body>
+    <div id="v_container" style="width: 200px;height: 50px;"></div>
+</body>
+</html>

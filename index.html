@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>考试系统 - 首页</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+      }
+      h1 {
+        color: #333;
+      }
+      p {
+        color: #666;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        margin: 10px 0;
+      }
+      a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+      a:hover {
+        color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 id="title">考试系统 - 首页</h1>
+      <!-- 新增：标题元素 -->
+      <p id="description">请选择你要的试卷：</p>
+      <!-- 新增：描述元素 -->
+      <ul></ul>
+    </div>
+    <script>
+      // 获取当前网站url
+      const url = window.location.href;
+      if (url.includes("index.html")) {
+
+      }
+      else{
+        window.location.href = "index.html";
+      }
+      fetch("exams/data/metadata.json") // 修改路径以匹配 metadata.json 的实际位置
+        .then((response) => response.json())
+        .then((data) => {
+          const ul = document.querySelector("ul");
+          data.exam.forEach((item) => {
+            // 修改遍历的键名为 exam
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            // 将当前的url链接中的indeex.html替换为exam.html
+            let newUrl = url.replace("index.html", `exam.html?id=${item.id}`);
+            a.href = newUrl; // 修改链接的路径以匹配 exam.html 的实际位置
+            a.textContent = item.name;
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+        })
+        .catch((error) => console.error(error));
+    </script>
+  </body>
+</html>
